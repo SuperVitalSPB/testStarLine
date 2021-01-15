@@ -1,9 +1,11 @@
 package com.supervital.starline_test.activity
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.supervital.starline_test.R
 import com.supervital.starline_test.entity.*
@@ -17,12 +19,14 @@ class MainActivity : AppCompatActivity() {
 
 
     private lateinit var btnGo: Button
+    private lateinit var tv_log: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         btnGo = findViewById(R.id.btnGo)
         btnGo.setOnClickListener(btnGo_onClick)
+        tv_log = findViewById(R.id.tv_log)
     }
 
 
@@ -32,24 +36,23 @@ class MainActivity : AppCompatActivity() {
 // Single<Map<Key, Value>>
         impInteractor.load(inList).subscribe(object : SingleObserver<Map<Key, Value>> {
             override fun onSubscribe(d: Disposable) {
-                Log.d(TAG,"onSubscribe occurred")
-                val sStr = "in:\n\tlistOf(${inList})"
-                Log.d(TAG, sStr)
+                addToLog("in:\n\tlistOf(${inList})")
             }
 
             override fun onSuccess(t: Map<Key, Value>) {
-                Log.d(TAG,"onSuccess")
-                val sStr = "out:\n\t ${t}"
-                Log.d(TAG, sStr)
+                addToLog( "\n out:\n\t ${t}")
             }
 
             override fun onError(e: Throwable) {
-                Log.d(TAG,"onError occurred: ${e}")
+                addToLog("onError occurred: ${e}")
             }
 
         })
+    }
 
-
+    @SuppressLint("SetTextI18n")
+    fun addToLog(sStr: String) {
+        tv_log.setText("${tv_log.text}\n${sStr}")
     }
 
     companion object {
