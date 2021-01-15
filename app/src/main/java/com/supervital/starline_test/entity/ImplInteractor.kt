@@ -1,9 +1,12 @@
 package com.supervital.starline_test.entity
 
 import android.util.Log
+import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 class ImplInteractor: Interactor {
 
@@ -14,22 +17,25 @@ class ImplInteractor: Interactor {
         keys.forEach {
             val implGateway = ImplGateway()
             var value: Value? = null
+            implGateway.get(it)
+               .doOnError { implGateway.connect() }
+/*               .retryWhen { error -> error.flatMap { implGateway
+                                                        .connect()
+                                                        .andThen(Flowable.fromCallable { it }) }
+               }*/
+               .subscribe(object : SingleObserver<Value> {
+                    override fun onSubscribe(d: Disposable) {
+                        Log.d(TAG, "onSubscribe")
+                    }
 
-            implGateway.get(it).subscribe(object : SingleObserver<Value> {
-                override fun onSubscribe(d: Disposable) {
-                    Log.d(TAG, "onSubscribe")
-                }
+                    override fun onSuccess(t: Value) {
+                        Log.d(TAG, "onSuccess")
+                        value = t
+                    }
 
-                override fun onSuccess(t: Value) {
-                    Log.d(TAG, "onSuccess")
-                    value = t
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.d(TAG, "onError occurred: ${e}")
-                }
-
-
+                    override fun onError(e: Throwable) {
+                        Log.d(TAG, "onError occurred: ${e}")
+                    }
             })
 
             if (value != null)

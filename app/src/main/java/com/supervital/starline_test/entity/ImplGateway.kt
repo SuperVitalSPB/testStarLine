@@ -22,14 +22,9 @@ class ImplGateway: Gateway {
             is OfflineKey -> key.value
             is OnlineKey -> {
                 if (!FConnected)
-                    try {
-                        throw IOException("I can't get the key, no connection")
-                    } catch (e: IOException) {
-                        connect()
-                    } catch (e: Exception) {
-                        return Single.error(e)
-                    }
-                // провекрку наличия соединения не делаю,
+                    return Single.error(IOException("I can't get the key, no connection"))
+
+                // проверку наличия соединения не делаю,
                 // выше вызвал connect(), считаем, что  есть коннекция
                 key.value
             }

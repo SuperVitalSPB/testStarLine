@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
 
     val btnGo_onClick = View.OnClickListener { view ->
+        tv_log.text = ""
         val inList = listOf(OfflineKey("1"), OnlineKey("2"), OfflineKey("3"))
         val impInteractor = ImplInteractor()
 // Single<Map<Key, Value>>
