@@ -1,4 +1,4 @@
-#testStarLine
+# testStarLine
 
 тестовое задание при приеме на работу, на должность android developer
 //Дано:
